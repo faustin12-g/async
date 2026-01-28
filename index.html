@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="container">
+        <div id="message"></div>
+        <button id="btnGet">Get Message</button>
+    </div>
+    <script>
+        function load(url)
+        {
+            return new Promise((resolve, reject)=>
+        {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function(){
+                if(this.readyState === 4 && this.status === 200)
+            {
+                resolve(this.response);
+            }
+            else{
+                reject(this.error)
+            }
+            }
+            xhr.open("GET", url, true);
+            xhr.send();
+        })
+        }
+
+        const url = 'https://jsonplaceholder.typicode.com/todos/1'
+        const btnGet = document.getElementById('btnGet');
+        const message = document.getElementById('message');
+
+        btnGet.addEventListener('click', ()=>
+    {
+        load(url)
+        .then(response=>{
+            message.innerHTML = response;
+        })
+        .catch(error=>{
+            message.innerHTML = `Error: ${error}`;
+        })
+        .finally(()=>{
+            console.log('Request completed');
+        })
+    })
+    </script>
+</body>
+
+</html>
