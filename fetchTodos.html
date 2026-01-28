@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //Create a function called fetchUserTodos that uses the Promise.all()
+        //  method to fetch users and todos concurrently from the provided API 
+        // endpoints and combine them based on the userId. The function should 
+        // return a promise that resolves with the combined data.
+
+        async function fetchUserTodos() {
+
+            const urls = ['https://jsonplaceholder.typicode.com/users', 'https://jsonplaceholder.typicode.com/todos']
+
+            const [user, todos] = await Promise.all(urls.map(url=>fetch(url)))
+            if(!user.ok) throw Error("Failed to fetch user: ", user.status)
+            if(!todos.ok) throw Error('Failed to fetch todos: ', todos.status)
+            const userDate = await user.json()
+            const todoData = await todos.json()
+
+            for(let u of userDate)
+        {
+            return {
+                userId: u.id,
+                name: u.name,
+                todos: todoData.filter(t=>t.userId === u.id)
+
+            }
+
+        }
+            
+        }
+
+        fetchUserTodos().then(console.log)
+
+//     </script>
+</body>
+</html>

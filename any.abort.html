@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        async function getFastPosts()
+        {
+            const controller = new AbortController();
+            const {signal} = controller;
+
+            const urls = [
+                'https://dummyjson.com/posts/eryr',
+                'https://this-may-not-exist.com/posts/123333',
+                'https://jsonplaceholder.typicode.com/posts/rtrttytr'
+            ];
+
+            try{
+                const response = await Promise.any(urls.map(url=>{
+                    return fetch(url, {signal})
+                }))
+                if(!response.ok)
+                {
+                    console.log("Error: ", response.status)
+                    throw new Error("OOPS! Error:", response.status)
+                }
+                const data = await response.json()
+                return data
+            }
+            catch(error)
+            {
+                console.log("Something went wrong", error.message)
+            }
+            finally{
+                controller.abort()
+            }
+            }
+
+            getFastPosts().then(data=>{
+                console.log(data)
+            })
+            .catch(error=>console.log("Error:", error.message))
+    </script>
+</body>
+</html>
